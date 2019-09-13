@@ -141,6 +141,7 @@
 
 #define STANZA_ATTR_TO "to"
 #define STANZA_ATTR_FROM "from"
+#define STANZA_ATTR_BY "by"
 #define STANZA_ATTR_STAMP "stamp"
 #define STANZA_ATTR_TYPE "type"
 #define STANZA_ATTR_CODE "code"
@@ -267,7 +268,7 @@ xmpp_stanza_t* stanza_create_mediated_invite(xmpp_ctx_t *ctx, const char *const 
 gboolean stanza_contains_chat_state(xmpp_stanza_t *stanza);
 
 GDateTime* stanza_get_delay(xmpp_stanza_t *const stanza);
-GDateTime* stanza_get_delay_from(xmpp_stanza_t *const stanza, gchar **from);
+GDateTime* stanza_get_delay_by_attr(xmpp_stanza_t *const stanza, gchar **from, const gchar* attr);
 
 gboolean stanza_is_muc_presence(xmpp_stanza_t *const stanza);
 gboolean stanza_is_muc_self_presence(xmpp_stanza_t *const stanza,

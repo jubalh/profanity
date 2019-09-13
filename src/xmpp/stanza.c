@@ -1174,11 +1174,17 @@ stanza_create_caps_sha1_from_query(xmpp_stanza_t *const query)
 GDateTime*
 stanza_get_delay(xmpp_stanza_t *const stanza)
 {
-    return stanza_get_delay_from(stanza, NULL);
+    return stanza_get_delay_by_attr(stanza, NULL, STANZA_ATTR_FROM);
 }
 
+// Gets the delay and needs either a `from` or `by` attribute.
+// Set attr to STANZA_ATTR_BY or STANZA_ATTR_FROM.
+//
+// XEP-0045 defines that we need STANZA_ATTR_FROM. But it seems some prosody versions
+// send STANZA_ATTR_BY instead.
+// See: https://github.com/profanity-im/profanity/issues/1190
 GDateTime*
-stanza_get_delay_from(xmpp_stanza_t *const stanza, gchar **from)
+stanza_get_delay_by_attr(xmpp_stanza_t *const stanza, gchar **from, const gchar* attr)
 {
     GTimeVal utc_stamp;
     // first check for XEP-0203 delayed delivery
@@ -1192,7 +1198,7 @@ stanza_get_delay_from(xmpp_stanza_t *const stanza, gchar **from)
                 GDateTime *local_datetime = g_date_time_to_local(utc_datetime);
                 g_date_time_unref(utc_datetime);
                 if (from) {
-                    *from = g_strdup(xmpp_stanza_get_attribute(delay, STANZA_ATTR_FROM));
+                    *from = g_strdup(xmpp_stanza_get_attribute(delay, attr));
                 }
                 return local_datetime;
             }
@@ -1211,7 +1217,7 @@ stanza_get_delay_from(xmpp_stanza_t *const stanza, gchar **from)
                 GDateTime *local_datetime = g_date_time_to_local(utc_datetime);
                 g_date_time_unref(utc_datetime);
                 if (from) {
-                    *from = g_strdup(xmpp_stanza_get_attribute(x, STANZA_ATTR_FROM));
+                    *from = g_strdup(xmpp_stanza_get_attribute(x, attr));
                 }
                 return local_datetime;
             }
